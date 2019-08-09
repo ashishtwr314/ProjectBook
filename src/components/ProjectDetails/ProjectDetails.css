@@ -1,0 +1,19 @@
+
+.drawer > div{
+    z-index: -5;
+    padding-top: 70px;
+    width: 250px;
+}
+
+.project-name{
+    font-size: 20px;
+}
+
+/* .v-center{
+    border: 1px solid;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+} */

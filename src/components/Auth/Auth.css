@@ -1,0 +1,25 @@
+.form-container{
+    padding: 30px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+.signup-cta, .login-cta{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 25px auto 0px auto;
+}
+.already-registered, .forgot-pass{
+    color: blueviolet;
+}
+
+
+
+@media only screen and (max-width: 600px){
+    .signup-cta, .login-cta{
+        flex-direction: column;
+    }   
+    .already-registered , .forgot-pass{
+        margin-top: 15px;;
+    }
+}
