@@ -1,94 +1,142 @@
-import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import Paper from '@material-ui/core/Paper';
+import React, { Component } from "react";
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
+import Paper from "@material-ui/core/Paper";
 import "./Auth.css";
-import { Link } from "react-router-dom";
-import { Typography, MenuItem, Fab, Button } from '@material-ui/core';
-// import { makeStyles } from '@material-ui/core';
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import {
+  Typography,
+  MenuItem,
+  Fab,
+  Button,
+  CircularProgress
+} from "@material-ui/core";
+import { signUp } from "../../store/actions/authActions";
 
-let classes = null
+let classes = null;
 
 class Auth extends Component {
+  state = {
+    formFeilds: [
+      {
+        label: "First Name",
+        required: true,
+        name: "firstName"
+      },
+      {
+        label: "Last Name",
+        required: true,
+        name: "lastName"
+      },
+      {
+        label: "Email",
+        required: true,
+        name: "email"
+      },
+      {
+        label: "Password",
+        required: true,
+        minLen: 6,
+        name: "password"
+      },
+      {
+        label: "College (Optional)",
+        name: "college"
+      }
+    ],
 
-    state = {
-        formFeilds : [
-            {
-                label: "First Name", 
-                required: true
-            },
-            {
-                label: "Last Name",
-                required: true
-            },
-            {
-                label: "Email",
-                required: true
-            },
-            {
-                label: "Password",
-                required: true,
-                minLen: 6
-            },
-            {
-                label: "College (Optional)"
-            },
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    college: ""
+  };
 
-        ],
-        coursesFeild : [
-            {name: "Bachelors of Engg.", id: 1 },
-            {name:  "Bachelors of Tech.", id: 2 },
-            {name: "Bachelors of Comp. App.", id: 3 },
-            {name: "Others" ,id: 4}        
-       ]
+  onChangeHandler = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+
+  onSubmitHandler = e => {
+    e.preventDefault();
+    let newUserDetails = { ...this.state };
+    delete newUserDetails.formFeilds;
+    this.props.signUp(newUserDetails);
+  };
+
+  render() {
+    if (this.props.authenticated) {
+      return <Redirect to="/" />;
     }
-    
-    
-    
-    
-    render() { 
-        return ( 
-            <React.Fragment>
-                <Paper className="form-container">
-                    <Typography variant="h5" align="center"> Register for Free </Typography>
-                    <form autoComplete="off">
-                        {this.state.formFeilds.map(feild => (
-                            <FormControl key={feild.label} fullWidth>
-                                <TextField
-                                    className = "input-feilds"
-                                    id="standard-with-placeholder"
-                                    label={feild.label}
-                                    placeholder={feild.label}
-                                    margin="normal"
-                                >
-                                </TextField>  
-                            </FormControl>
-                        ))}
-                        <FormControl fullWidth>
-                            <TextField select  className = "input-feilds" id="standard-with-placeholder" label="Course" placeholder="Course">
-                                {this.state.coursesFeild.map(course => (
-                                    <MenuItem key={course.id} value={course.id} >
-                                        {course.name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </FormControl>
-                        <div className="signup-cta">
-                            <Button  size="large" variant="contained" color="primary">
-                                Sign Up
-                            </Button>
 
-                            <Link to="/login" className="already-registered" >
-                                Already a member ? Login Here
-                            </Link>
-                        </div>
-                    </form>
-                </Paper>
+    return (
+      <React.Fragment>
+        <Paper className="form-container">
+          <Typography variant="h5" align="center">
+            {" "}
+            Register for Free{" "}
+          </Typography>
+          <form onSubmit={e => this.onSubmitHandler(e)} autoComplete="off">
+            {this.state.formFeilds.map(feild => (
+              <FormControl key={feild.label} fullWidth>
+                <TextField
+                  name={feild.name}
+                  value={feild.value}
+                  className="input-feilds"
+                  id="standard-with-placeholder"
+                  label={feild.label}
+                  placeholder={feild.label}
+                  margin="normal"
+                  onChange={e => this.onChangeHandler(e)}
+                ></TextField>
+              </FormControl>
+            ))}
+            <Typography align="center" color="error" className="error-message ">
+              {this.props.signUpError}
+            </Typography>
+            <div className="signup-cta">
+              {!this.props.signUpGoingOn ? (
+                <Button
+                  type="submit"
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                >
+                  Sign Up
+                </Button>
+              ) : (
+                <div className="progress-circle">
+                  <CircularProgress />
+                </div>
+              )}
 
-
-            </React.Fragment>
-         );
-    }
+              <Link to="/login" className="already-registered">
+                Already a member ? Login Here
+              </Link>
+            </div>
+          </form>
+        </Paper>
+      </React.Fragment>
+    );
+  }
 }
- 
-export default Auth;
+
+const mapStateToProps = state => {
+  return {
+    signUpError: state.auth.signUpError,
+    signUpGoingOn: state.auth.signUpGoingOn,
+    authenticated: state.auth.authenticated
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    signUp: newUserDetails => dispatch(signUp(newUserDetails))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Auth);

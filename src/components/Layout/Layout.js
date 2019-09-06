@@ -6,18 +6,25 @@ import AuthSingup from '../Auth/AuthSignup';
 import AuthLogin from '../Auth/AuthLogin';
 import Container from  "@material-ui/core/Container"
 import ProjectDetails from '../ProjectDetails/ProjectDetails';
+import CreateProject from '../CreateProject/CreateProject';
 
 class Layout extends Component {
+
+    state = {
+        showPopover: false
+    }
+
     render() { 
         return ( 
             <React.Fragment>
-                <Navbar />
-                <Container style={{marginTop: '50px'}} maxWidth="lg">
+                <Navbar showPopoverHandler={ ()=> this.setState({ showPopover: !this.state.showPopover })} showPopover={this.state.showPopover} />
+                <Container onClick={()=> this.setState({showPopover: false})} style={{marginTop: '50px'}} maxWidth="lg">
                     <Switch> 
 
                         <Route exact path="/" component={Dashboard} />
                         <Route exact path="/signup" component={AuthSingup} />
                         <Route exact path="/login" component={AuthLogin} />
+                        <Route exact path="/create" component={CreateProject} />
                         <Route exact path="/projects/:id" component={ProjectDetails} />
                     </Switch>
                 </Container>

@@ -1,25 +1,42 @@
-.form-container{
-    padding: 30px;
-    max-width: 500px;
-    margin: 0 auto;
+.form-container {
+  padding: 30px;
+  max-width: 500px;
+  margin: 0 auto;
 }
-.signup-cta, .login-cta{
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    margin: 25px auto 0px auto;
+.signup-cta,
+.login-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 25px auto 0px auto;
 }
-.already-registered, .forgot-pass{
-    color: blueviolet;
+.already-registered,
+.forgot-pass {
+  color: blueviolet;
 }
 
+.error-message {
+  margin-top: 20px !important;
+}
+.links {
+  color: blue;
+}
+.links-container {
+  display: flex;
+  margin: 20px 0 !important;
+  justify-content: space-around;
+}
+.snackbar-success {
+  background-color: green !important;
+}
 
-
-@media only screen and (max-width: 600px){
-    .signup-cta, .login-cta{
-        flex-direction: column;
-    }   
-    .already-registered , .forgot-pass{
-        margin-top: 15px;;
-    }
+@media only screen and (max-width: 600px) {
+  .signup-cta,
+  .login-cta {
+    flex-direction: column;
+  }
+  .already-registered,
+  .forgot-pass {
+    margin-top: 15px;
+  }
 }
