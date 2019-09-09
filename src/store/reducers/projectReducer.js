@@ -2,7 +2,8 @@ import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
   showCreationLoader: false,
-  newlyCreatedPostId: ""
+  newlyCreatedPostId: "",
+  navActionLoader: "overview"
 };
 
 const projectReducer = (state = initialState, action) => {
@@ -23,6 +24,11 @@ const projectReducer = (state = initialState, action) => {
       return {
         ...state,
         newlyCreatedPostId: false
+      };
+    case actionTypes.NAV_ACTION_LOADER:
+      return {
+        ...state,
+        navActionLoader: action.navAction
       };
     default:
       return state;

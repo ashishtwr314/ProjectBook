@@ -48,3 +48,10 @@ export const QRupload = (id, img) => {
       });
   };
 };
+
+export const navActionLoader = navAction => {
+  return {
+    type: actionTypes.NAV_ACTION_LOADER,
+    navAction: navAction
+  };
+};
