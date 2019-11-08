@@ -8,6 +8,8 @@ import IconButton from "@material-ui/core/IconButton";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 import { Popover, SnackbarContent } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
@@ -25,8 +27,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.shape.borderRadius
   },
   avatar: {
-    width: "40px",
-    height: "40px"
+    width: "30px",
+    height: "30px"
   },
   popoverContent: {
     display: "flex",
@@ -35,8 +37,20 @@ const useStyles = makeStyles(theme => ({
   },
   success: {
     backgroundColor: "green"
+  },
+  email: {
+    fontSize: "14px"
   }
 }));
+
+const handleSidebar = () => {
+  const sidebar = document.getElementById("sidebar");
+  if (sidebar.style.left == "-100%") {
+    sidebar.style.left = 0;
+  } else {
+    sidebar.style.left = "-100%";
+  }
+};
 
 const Navbar = props => {
   const [snackState, setSnackState] = React.useState(false);
@@ -59,11 +73,14 @@ const Navbar = props => {
       <Link to={"/create"}>
         <Button color="inherit">Create Project</Button>
       </Link>
+      <Link to={"/myprojects"}>
+        <Button color="inherit">My Projects</Button>
+      </Link>
       <Link className="popoverbutton">
         <Button onClick={props.showPopoverHandler} color="inherit">
           <Avatar
             alt="Remy Sharp"
-            src="https://material-ui.com/static/images/avatar/1.jpg"
+            src="https://cdn3.iconfinder.com/data/icons/social-messaging-productivity-6/128/profile-male-circle2-512.png"
             className={classes.avatar}
           />
         </Button>
@@ -75,7 +92,17 @@ const Navbar = props => {
           className="popover"
         >
           <div className={classes.popoverContent}>
-            <Typography>Remy Sharp</Typography>
+            <div>
+              <Typography>
+                {props.userDetails[0].firstName +
+                  " " +
+                  props.userDetails[0].lastName}
+              </Typography>
+              <Typography className={classes.email}>
+                {props.userDetails[0].email}
+              </Typography>
+            </div>
+
             <Button
               onClick={() => {
                 props.logout();
@@ -93,9 +120,15 @@ const Navbar = props => {
 
   return (
     <div>
-      <AppBar className="navbar" position="static">
+      <AppBar className="navbar" position="fixed">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
+          <IconButton
+            onClick={handleSidebar}
+            className="menu-icon-btn"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+          >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6">
@@ -126,7 +159,9 @@ const Navbar = props => {
 
 const mapStateToProps = state => {
   return {
-    authenticated: state.auth.authenticated
+    authenticated: state.auth.authenticated,
+    uid: state.auth.uid,
+    userDetails: state.firebase.ordered.users
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -134,7 +169,13 @@ const mapDispatchToProps = dispatch => {
     logout: () => dispatch(logout())
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
+  firestoreConnect(props => [
+    { collection: "users", doc: props.uid ? props.uid : null }
+  ])
 )(Navbar);

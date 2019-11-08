@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+
 import "./ProjectDetails.css";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { navActionLoader } from "../../store/actions/projectActions";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   bottomNav: {
@@ -42,7 +43,8 @@ const useStyles = makeStyles(theme => ({
     overflow: "scroll"
   },
   QR: {
-    margin: "20px 0"
+    margin: "20px 0",
+    width: "250px"
   }
 }));
 
@@ -58,8 +60,11 @@ const ProjectDetails = props => {
     slidesToShow: 1,
     slidesToScroll: 1
   };
-
   const classes = useStyles();
+  if (!props.authenticated) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <React.Fragment>
       <div className="project-details">
@@ -106,11 +111,13 @@ const ProjectDetails = props => {
                 }}
               >
                 <List className={classes.techUsed} component="nav">
-                  {project.techUsed.map(tech => (
-                    <ListItem button>
-                      <ListItemText primary={tech} />
-                    </ListItem>
-                  ))}
+                  {project.techUsed
+                    ? project.techUsed.map(tech => (
+                        <ListItem button>
+                          <ListItemText primary={tech} />
+                        </ListItem>
+                      ))
+                    : null}
                 </List>
               </div>
               <div
@@ -123,11 +130,25 @@ const ProjectDetails = props => {
                 }}
               >
                 <Typography variant="h5">
-                  This is your Project's QR, Scan this to access details of your
+                  This is Project's QR, Scan this to access details of the
                   project
                 </Typography>
 
                 <img className={classes.QR} src={project.img} alt="QR" />
+              </div>
+
+              <div
+                id="userDetails"
+                style={{
+                  transform:
+                    props.navActionLoaded === "userDetails"
+                      ? "translateY(-50%) scale(1)"
+                      : " translateY(-50%) scale(0)"
+                }}
+              >
+                <Typography variant="h5">
+                  Uploaded on: {project.dateTime}
+                </Typography>
               </div>
             </div>
           </React.Fragment>
@@ -164,6 +185,12 @@ const ProjectDetails = props => {
           value="recents"
           onClick={() => props.navAction("qr")}
         />
+        {/* <BottomNavigationAction
+          className="bottomNavItem"
+          label="User Details"
+          value="recents"
+          onClick={() => props.navAction("userDetails")}
+        /> */}
       </BottomNavigation>
     </React.Fragment>
   );
@@ -172,7 +199,9 @@ const ProjectDetails = props => {
 const mapStateToProps = state => {
   return {
     project: state.firebase.ordered.Projects,
-    navActionLoaded: state.project.navActionLoader
+    navActionLoaded: state.project.navActionLoader,
+    authenticated: state.auth.authenticated
+    // uid: state.firebase.ordered.Projects.uid
   };
 };
 
@@ -193,6 +222,10 @@ export default compose(
     {
       collection: "Projects",
       doc: props.match.params.id
+    },
+    {
+      collection: "Users",
+      doc: props.uid
     }
   ])
 )(ProjectDetails);

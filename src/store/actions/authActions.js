@@ -1,8 +1,9 @@
 import * as actionTypes from "./actionTypes";
 
-export const loginSuccess = () => {
+export const loginSuccess = loginDetails => {
   return {
-    type: actionTypes.LOGIN_SUCCESSFULL
+    type: actionTypes.LOGIN_SUCCESSFULL,
+    loginDetails: loginDetails
   };
 };
 
@@ -22,7 +23,7 @@ export const handleLogin = creds => {
       .auth()
       .signInWithEmailAndPassword(creds.email, creds.password)
       .then(response => {
-        dispatch(loginSuccess());
+        dispatch(loginSuccess(response));
       })
       .catch(response => {
         dispatch(loginFailed(response));
@@ -73,3 +74,7 @@ export const signUp = newUserDetails => {
       });
   };
 };
+
+// export const getUserDetails = (uid) => {
+
+// }

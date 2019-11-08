@@ -1,6 +1,7 @@
-.card{
-    max-width: 90%;
+.card {
+  max-width: 70%;
+  margin: 0 auto;
 }
-.card:not(:last-child){
-    margin-bottom: 30px;
+.card:not(:last-child) {
+  margin-bottom: 30px;
 }

@@ -6,17 +6,20 @@ let initialState = {
   loginError: null,
   signUpSuccess: null,
   signUpError: null,
-  signUpGoingOn: false
+  signUpGoingOn: false,
+  uid: null
 };
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.LOGIN_SUCCESSFULL:
+      console.log(action.loginDetails.user.Nb.uid);
       return {
         ...state,
         loginGoingOn: false,
         authenticated: true,
-        loginError: null
+        loginError: null,
+        uid: action.loginDetails.user.Nb.uid
       };
     case actionTypes.LOGIN_FAILED:
       return {

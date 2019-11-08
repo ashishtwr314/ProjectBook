@@ -25,7 +25,7 @@ class ProjectCreated extends Component {
         <div className="QR">
           <QRCode
             id={this.props.newlyCreatedPostId}
-            value={`https://localhost:3000/projects/${this.props.newlyCreatedPostId}`}
+            value={`https://projectbook.netlify.com/projects/${this.props.newlyCreatedPostId}`}
           />
         </div>
         <div className="back-links">

@@ -21,6 +21,7 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 import QRCode from "qrcode.react";
 import ProjectCreated from "./ProjectCreated";
+import { firestoreConnect } from "react-redux-firebase";
 
 class CreateProject extends Component {
   state = {
@@ -44,20 +45,20 @@ class CreateProject extends Component {
         name: "desc",
         type: "input"
       },
-      {
-        label: "Front End Technologies",
-        required: true,
-        type: "checkbox",
-        name: "frontEnd",
-        techs: ["HTML", "CSS", "VanillaJS", "jQuery", "React", "Angular", "Vue"]
-      },
-      {
-        label: "Back End Technologies",
-        required: true,
-        type: "checkbox",
-        name: "backEnd",
-        techs: ["SQL", "PHP", "Node", "MonoDB", "FireStore", "ASP", "Wordpress"]
-      },
+      // {
+      //   label: "Front End Technologies",
+      //   required: true,
+      //   type: "checkbox",
+      //   name: "frontEnd",
+      //   techs: ["HTML", "CSS", "VanillaJS", "jQuery", "React", "Angular", "Vue"]
+      // },
+      // {
+      //   label: "Back End Technologies",
+      //   required: true,
+      //   type: "checkbox",
+      //   name: "backEnd",
+      //   techs: ["SQL", "PHP", "Node", "MonoDB", "FireStore", "ASP", "Wordpress"]
+      // },
       {
         label: "Technologies used",
         required: true,
@@ -71,7 +72,9 @@ class CreateProject extends Component {
     techUsed: "",
     desc: "",
     techStr: "",
-    img: ""
+    img: "",
+    dateTime: "",
+    uid: ""
   };
 
   addAnotherProject = () => {
@@ -93,11 +96,14 @@ class CreateProject extends Component {
 
     this.setState(
       {
-        techUsed: tech
+        techUsed: tech,
+        dateTime: new Date().toString(),
+        uid: this.props.uid
       },
       () => {
         let projectDetails = { ...this.state };
         delete projectDetails.formFeilds;
+        console.log(projectDetails);
         this.props.projectCreationStart();
         this.props.onNewProject(projectDetails);
       }
@@ -134,6 +140,7 @@ class CreateProject extends Component {
                       className="input-feilds"
                       id="standard-with-placeholder"
                       label={feild.label}
+                      required
                       placeholder={feild.label}
                       margin="normal"
                       name={feild.name}
@@ -150,8 +157,7 @@ class CreateProject extends Component {
               )}
               {this.props.showCreationLoader ? (
                 <div className="progress-circle">
-                  {" "}
-                  <CircularProgress />{" "}
+                  <CircularProgress />
                 </div>
               ) : (
                 <div className="signup-cta">
@@ -174,12 +180,12 @@ class CreateProject extends Component {
 }
 
 const mapStateToProps = state => {
-  //   console.log(state);
   return {
     projectCreationLoaded: state.project.projectCreationLoaded,
     showCreationLoader: state.project.showCreationLoader,
     newlyCreatedPostId: state.project.newlyCreatedPostId,
-    authenticated: state.auth.authenticated
+    authenticated: state.auth.authenticated,
+    uid: state.auth.uid
   };
 };
 

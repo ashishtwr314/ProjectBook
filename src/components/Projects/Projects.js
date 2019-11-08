@@ -38,8 +38,7 @@ const Projects = props => {
         ))
       ) : (
         <div className="progress-circle">
-          {" "}
-          <CircularProgress />{" "}
+          <CircularProgress />
         </div>
       )}
     </React.Fragment>

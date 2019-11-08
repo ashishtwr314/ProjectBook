@@ -109,6 +109,7 @@ class Auth extends Component {
                 <FormControl fullWidth>
                   <TextField
                     name="password"
+                    type="password"
                     onChange={e => this.handleChange(e)}
                     margin="normal"
                     id="input-with-icon-textfield"
@@ -162,7 +163,6 @@ class Auth extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {
     loginGoingOn: state.auth.loginGoingOn,
     loginError: state.auth.loginError,
